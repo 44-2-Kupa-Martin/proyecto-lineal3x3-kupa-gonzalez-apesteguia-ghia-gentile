@@ -27,15 +27,44 @@ def inputHandler(str):
         sys.exit('Invalid inputs')
 
 def typeChecker(e1, e2, e3):
+    skip= [[],[],[]]
     global isolatedZ
     isolatedZ= (e1[1]*e3[0]-e1[0]*e3[1])*(e1[2]*e2[0]-e1[0]*e2[2])-(e1[1]*e2[0]-e1[0]*e2[1])*(e1[2]*e3[0]-e1[0]*e3[2])
-    equalTo= 1#some formula
+    equalTo= 0#some formula
+    
+    
     #undetermined check
     if (isolatedZ == 0):
         #inconsistent check
         if (equalTo != 0):
             inconsistentHandler(e1, e2, e3)
             return
+        #division by zero prevention
+        for index in range(3):
+            #checks for e2[]
+            if (e2[index]==0):
+                if (e1[index==0]):
+                    skip[0][index]= True
+                else:
+                    skip[0]= True
+            else:
+                skip[0][index]= False
+            #checks for e3[]
+            if (e3[index]==0):
+                if (e2[index]==0):
+                    skip[1][index]= True
+                else:
+                    skip[1]= True
+
+                if (e1[index]==0):
+                    skip[2][index]= True
+                else:
+                    skip[2]= True
+            else:
+                skip[1][index]= False
+                skip[2][index]= False
+
+        
         multiples= False
         if (e1[0] / e2[0] == e1[1] / e2[1] == e1[2] / e2[2]):
             print('The 1st and the 2nd equation are multiples')

@@ -8,7 +8,7 @@ def menu():
     except:
         sys.exit('Invalid input')
     if (a== 1):
-        typeChecker(inputHandler(input('Enter the 1st equation\n(e.g 1,2,3)\n')), inputHandler(input('Enter the 2st equation\n')), inputHandler(input('Enter the 3st equation\n')))
+        type_checker(input_handler(input('Enter the 1st equation\n(e.g 1, 2, 3)\n')), input_handler(input('Enter the 2st equation\n')), input_handler(input('Enter the 3st equation\n')))
         return
     elif (a == 2):
         sys.exit()
@@ -16,7 +16,7 @@ def menu():
         sys.exit('Invalid input')
     
 
-def inputHandler(str):
+def input_handler(str):
     x= lambda a: float(a)
     try:
         if (str.find(',')== -1):
@@ -26,95 +26,126 @@ def inputHandler(str):
     except:
         sys.exit('Invalid inputs')
 
-def preventDivByZero(e1, e2, e3):
-    check= [['e1[0] / e2[0]', 'e1[1] / e2[1]', 'e1[2] / e2[2]'],['e2[0] / e3[0]', 'e2[1] / e3[1]', 'e2[2] / e3[2]'],['e1[0] / e3[0]', 'e1[1] / e3[1]', 'e1[2] / e3[2]']]
-    e1e2Statement= None
-    e2e3Statement= None
-    e1e3Statement= None
-    #test if values are suitable for division
-    for index in range(3):
-        #checks for e2[]
-        if (e2[index]==0):
-            if (e1[index]==0):
-                check[0].pop(index)
-            else:
-                check[0]= False
-        #checks for e3[]
-        if (e3[index]==0):
-            if (e2[index]==0):
-                check[1].pop(index)
-            else:
-                check[1]= False
-            if (e1[index]==0):
-                check[2].pop(index)
-            else:
-                check[2]= False
-    #statement constructor
-    if (check[0]):
-        check0Length= len(check[0])
-        if (check0Length == 1):
-            e1e2Statement= True    
-        elif (check0Length == 2):
-            e1e2Statement= eval(f'{check[0][0]} == {check[0][1]}')
-        elif (check0Length == 3):
-            e1e2Statement= eval(f'{check[0][0]} == {check[0][1]} == {check[0][2]}')
-    if (check[1]):
-        check1Length= len(check[1])
-        if (check1Length == 1):
-            e2e3Statement= True    
-        elif (check1Length == 2):
-            e2e3Statement= eval(f'{check[1][0]} == {check[1][1]}')
-        elif (check1Length == 3):
-            e2e3Statement= eval(f'{check[1][0]} == {check[1][1]} == {check[1][2]}')
-    if (check[2]):
-        check2Length= len(check[2])
-        if (check2Length == 1):
-            e1e3Statement= True    
-        elif (check2Length == 2):
-            e1e3Statement= eval(f'{check[2][0]} == {check[2][1]}')
-        elif (check2Length == 3):
-            e1e3Statement= eval(f'{check[2][0]} == {check[2][1]} == {check[2][2]}')
-    return [e1e2Statement, e2e3Statement, e1e3Statement]
-
-def typeChecker(e1, e2, e3):
-    global isolatedZ
-    isolatedZ= (e1[1]*e3[0]-e1[0]*e3[1])*(e1[2]*e2[0]-e1[0]*e2[2])-(e1[1]*e2[0]-e1[0]*e2[1])*(e1[2]*e3[0]-e1[0]*e3[2])
-    print(isolatedZ)
-    equalTo= 0#some formula
+def type_checker(e1, e2, e3):
+    global isolated_z
+    isolated_z= (e1[1]*e3[0]-e1[0]*e3[1])*(e1[2]*e2[0]-e1[0]*e2[2])-(e1[1]*e2[0]-e1[0]*e2[1])*(e1[2]*e3[0]-e1[0]*e3[2])
+    print(isolated_z)
+    equal_to= 0#some formula
     
     #undetermined check
-    if (isolatedZ == 0):
+    if (isolated_z == 0):
         #inconsistent check
-        if (equalTo != 0):
-            inconsistentHandler(e1, e2, e3)
+        if (equal_to != 0):
+            inconsistent_handler(e1, e2, e3)
             return
-        e1e2Statement, e2e3Statement, e1e3Statement= preventDivByZero(e1, e2, e3)
+        e1_e2_statement, e2_e3_statement, e1_e3_statement= prevent_div_by_zero(e1, e2, e3)
         multiples= False
-        if (e1e2Statement):
+        if (e1_e2_statement):
             print('The 1st and the 2nd equation are multiples')
             multiples= True
-        if (e2e3Statement):
+        if (e2_e3_statement):
             print('The 2nd and the 3rd equation are multiples')
             multiples= True
-        if (e1e3Statement):
+        if (e1_e3_statement):
             print('The 1st and the 3rd equation are multiples')
             multiples= True
         if (not multiples):
             print('The equations are linearly dependent')
         else:
-            undeterminedHandler(e1, e2, e3)
+            undetermined_handler(e1, e2, e3)
             return
     else:
-        determinedHandler(e1, e2, e3)
+        determined_handler(e1, e2, e3)
         return
 
-def determinedHandler(e1, e2, e3):
+
+def prevent_div_by_zero(e1, e2, e3):
+    check= [['e1[0] / e2[0]', 'e1[1] / e2[1]', 'e1[2] / e2[2]'],['e2[0] / e3[0]', 'e2[1] / e3[1]', 'e2[2] / e3[2]'],['e1[0] / e3[0]', 'e1[1] / e3[1]', 'e1[2] / e3[2]']]
+    #assume there are no multiples
+    e1_e2_statement= False
+    e2_e3_statement= False
+    e1_e3_statement= False
+    #test if values are suitable for division
+    for i in range(3):
+        #checks for e2[]
+        if (e2[i]==0):
+            if (e1[i]==0):
+                check[0][i]= ''
+            else:
+                check[0]= False
+        #checks for e3[]
+        if (e3[i]==0):
+            if (e2[i]==0):
+                check[1][i]= ''
+            else:
+                check[1]= False
+            if (e1[i]==0):
+                check[2][i]= ''
+            else:
+                check[2]= False
+
+    #statement constructor
+    if (check[0]):
+        #remove falsy entries
+        done= False
+        for i in range(3):
+            if (not done):
+                try:
+                    check[0].remove('')
+                except:
+                    done= True
+        #construct condition
+        check0_length= len(check[0])
+        if (check0_length == 1):
+            e1_e2_statement= True    
+        elif (check0_length == 2):
+            e1_e2_statement= eval(f'{check[0][0]} == {check[0][1]}')
+        elif (check0_length == 3):
+            e1_e2_statement= eval(f'{check[0][0]} == {check[0][1]} == {check[0][2]}')
+    if (check[1]):
+        #remove falsy entries
+        done= False
+        for i in range(3):
+            if (not done):
+                try:
+                    check[1].remove('')
+                except:
+                    done= True
+        #construct condition
+        check1_length= len(check[1])
+        if (check1_length == 1):
+            e2_e3_statement= True    
+        elif (check1_length == 2):
+            e2_e3_statement= eval(f'{check[1][0]} == {check[1][1]}')
+        elif (check1_length == 3):
+            e2_e3_statement= eval(f'{check[1][0]} == {check[1][1]} == {check[1][2]}')
+    if (check[2]):
+        #remove falsy entries
+        done= False
+        for i in range(3):
+            if (not done):
+                try:
+                    check[2].remove('')
+                except:
+                    done= True
+        #construct condition
+        check2_length= len(check[2])
+        if (check2_length == 1):
+            e1_e3_statement= True    
+        elif (check2_length == 2):
+            e1_e3_statement= eval(f'{check[2][0]} == {check[2][1]}')
+        elif (check2_length == 3):
+            e1_e3_statement= eval(f'{check[2][0]} == {check[2][1]} == {check[2][2]}')
+    return [e1_e2_statement, e2_e3_statement, e1_e3_statement]
+
+
+def determined_handler(e1, e2, e3):
     return
 
-def undeterminedHandler(e1, e2, e3):
+def undetermined_handler(e1, e2, e3):
     return
 
-def inconsistentHandler(e1, e2, e3):
+def inconsistent_handler(e1, e2, e3):
     print('The system is inconsistent')
     menu()
     return

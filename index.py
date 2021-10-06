@@ -5,7 +5,7 @@ def menu():
     print('What do you want to do?\n\t1- Solve a system\n\t2- Exit')
     try:
         a= int(input())
-    except:
+    except ValueError:
         sys.exit('Invalid input')
     if (a== 1):
         global input_matrix
@@ -29,9 +29,8 @@ def input_handler(str):
         sys.exit('Invalid inputs')
 
 def type_checker(M):
-    #multiples check
-    e1_e2_constants_multiples, e2_e3_constants_multiples, e3_e1_constants_multiples, e1_e2_results_multiples, e2_e3_results_multiples, e3_e1_results_multiples= prevent_div_by_zero(M)
-    multiples= False
+    e1_e2_constants_multiples, e2_e3_constants_multiples, e3_e1_constants_multiples, e1_e2_results_multiples, e2_e3_results_multiples, e3_e1_results_multiples= multiples_identifier(M)
+    #remove equations that are multiples
     if (e1_e2_constants_multiples):
         print('The 1st and the 2nd equation are multiples')
         if (not e1_e2_results_multiples):
@@ -60,18 +59,27 @@ def type_checker(M):
         except ValueError:
             done= True
     if (not M):
-        print("Can't compute a null system")
+        print("All equations of the system are multiples, such systems cannot be calculated.")
         return
-    print(reduced_row_echelon_form(M))
+    result= reduced_row_echelon_form(M)
+    try:
+        if (result[2][2]==1):
+            determined_handler(result)
+            return
+    except:
+        pass
+    undetermined_handler(M)
+    return
 
 
-def prevent_div_by_zero(M):
+
+def multiples_identifier(M):
     check= [['M[0][0] / M[1][0]', 'M[0][1] / M[1][1]', 'M[0][2] / M[1][2]'],['M[1][0] / M[2][0]', 'M[1][1] / M[2][1]', 'M[1][2] / M[2][2]'],['M[2][0] / M[0][0]', 'M[2][1] / M[0][1]', 'M[2][2] / M[0][2]']]
     #assume there are no multiples
     e1_e2_constants_multiples= False
     e2_e3_constants_multiples= False
     e3_e1_constants_multiples= False
-    #and initialize var for future use
+    #and initialize vars for future use
     e1_e2_results_multiples= None
     e2_e3_results_multiples= None
     e3_e1_results_multiples= None
@@ -80,19 +88,28 @@ def prevent_div_by_zero(M):
         #checks for M[1]
         if (M[1][i]==0):
             if (M[0][i]==0):
-                check[0][i]= ''
+                try:
+                    check[0][i]= ''
+                except TypeError:
+                    pass
             else:
                 check[0]= False
         #checks for M[2]
         if (M[2][i]==0):
             if (M[1][i]==0):
-                check[1][i]= ''
+                try:
+                    check[1][i]= ''
+                except TypeError:
+                    pass
             else:
                 check[1]= False
         #checks for M[0]
         if (M[0][i]==0):
             if (M[2][i]==0):
-                check[2][i]= ''
+                try:
+                    check[2][i]= ''
+                except TypeError:
+                    pass
             else:
                 check[2]= False
     #handle system's results that are zero
@@ -141,7 +158,7 @@ def prevent_div_by_zero(M):
                 done= True
         #construct condition for system's constants
         check1_length= len(check[1])
-        if (check1_length == 1):
+        if (check1_length == 1 or check1_length == 0):
             e2_e3_constants_multiples= True    
         elif (check1_length == 2):
             e2_e3_constants_multiples= eval(f'{check[1][0]} == {check[1][1]}')
@@ -160,7 +177,7 @@ def prevent_div_by_zero(M):
                 done= True
         #construct condition for system's constants
         check2_length= len(check[2])
-        if (check2_length == 1):
+        if (check2_length == 1 or check2_length == 0):
             e3_e1_constants_multiples= True    
         elif (check2_length == 2):
             e3_e1_constants_multiples= eval(f'{check[2][0]} == {check[2][1]}')
@@ -206,23 +223,13 @@ def undetermined_handler(e1, e2, e3):
     return
 
 def inconsistent_handler(M):
+    global exit_program
     print('The system is inconsistent')
-    menu()
+    exit_program= True
     return
-
-def zeros(M):
-    var_zero= None
-    i= 0
-    done= False
-    for j in range(3):
-        while i < 3:
-            if (M[i][j]==0):
-                i = i + 1
-            else:
-                continue
-        var_zero[j]= True
-
 
 #code
 print('Welcome to the 3x3 linear equation solver, made by Kupa; Gonzalez, Ghia, Apesteguia and Gentile')
-menu()
+exit_program= False
+while not exit_program:
+    menu()

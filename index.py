@@ -8,7 +8,9 @@ def menu():
     except:
         sys.exit('Invalid input')
     if (a== 1):
-        type_checker(input_handler(input('Enter the 1st equation\n(e.g 1, 2, 3)\n')), input_handler(input('Enter the 2st equation\n')), input_handler(input('Enter the 3st equation\n')))
+        global input_matrix
+        input_matrix= [input_handler(input('Enter the 1st equation\n(e.g 1, 2, 3, 26)\n')), input_handler(input('Enter the 2st equation\n')), input_handler(input('Enter the 3st equation\n'))]
+        type_checker(input_matrix)
         return
     elif (a == 2):
         sys.exit()
@@ -20,124 +22,182 @@ def input_handler(str):
     x= lambda a: float(a)
     try:
         if (str.find(',')== -1):
-            return tuple(map(x, str.split(' ')))
+            return list(map(x, str.split(' ')))
         else:
-            return tuple(map(x, str.replace(' ', '').split(',')))
+            return list(map(x, str.replace(' ', '').split(',')))
     except:
         sys.exit('Invalid inputs')
 
-def type_checker(e1, e2, e3):
-    global isolated_z
-    isolated_z= (e1[1]*e3[0]-e1[0]*e3[1])*(e1[2]*e2[0]-e1[0]*e2[2])-(e1[1]*e2[0]-e1[0]*e2[1])*(e1[2]*e3[0]-e1[0]*e3[2])
-    print(isolated_z)
-    equal_to= 0#some formula
-    
-    #undetermined check
-    if (isolated_z == 0):
-        #inconsistent check
-        if (equal_to != 0):
-            inconsistent_handler(e1, e2, e3)
+def type_checker(M):
+    #multiples check
+    e1_e2_constants_multiples, e2_e3_constants_multiples, e3_e1_constants_multiples, e1_e2_results_multiples, e2_e3_results_multiples, e3_e1_results_multiples= prevent_div_by_zero(M)
+    multiples= False
+    if (e1_e2_constants_multiples):
+        print('The 1st and the 2nd equation are multiples')
+        if (not e1_e2_results_multiples):
+            inconsistent_handler(M)
             return
-        e1_e2_statement, e2_e3_statement, e1_e3_statement= prevent_div_by_zero(e1, e2, e3)
-        multiples= False
-        if (e1_e2_statement):
-            print('The 1st and the 2nd equation are multiples')
-            multiples= True
-        if (e2_e3_statement):
-            print('The 2nd and the 3rd equation are multiples')
-            multiples= True
-        if (e1_e3_statement):
-            print('The 1st and the 3rd equation are multiples')
-            multiples= True
-        if (not multiples):
-            print('The equations are linearly dependent')
         else:
-            undetermined_handler(e1, e2, e3)
+            M[0]= None
+    if (e2_e3_constants_multiples):
+        print('The 2nd and the 3rd equation are multiples')
+        if (not e2_e3_results_multiples):
+            inconsistent_handler(M)
             return
-    else:
-        determined_handler(e1, e2, e3)
+        else:
+            M[1]= None
+    if (e3_e1_constants_multiples):
+        print('The 1st and the 3rd equation are multiples')
+        if (not e3_e1_results_multiples):
+            inconsistent_handler(M)
+            return
+        else:
+            M[2]= None
+    done= False
+    while not done:
+        try:
+            M.remove(None)
+        except ValueError:
+            done= True
+    if (not M):
+        print("Can't compute a null system")
         return
+    print(reduced_row_echelon_form(M))
 
 
-def prevent_div_by_zero(e1, e2, e3):
-    check= [['e1[0] / e2[0]', 'e1[1] / e2[1]', 'e1[2] / e2[2]'],['e2[0] / e3[0]', 'e2[1] / e3[1]', 'e2[2] / e3[2]'],['e1[0] / e3[0]', 'e1[1] / e3[1]', 'e1[2] / e3[2]']]
+def prevent_div_by_zero(M):
+    check= [['M[0][0] / M[1][0]', 'M[0][1] / M[1][1]', 'M[0][2] / M[1][2]'],['M[1][0] / M[2][0]', 'M[1][1] / M[2][1]', 'M[1][2] / M[2][2]'],['M[2][0] / M[0][0]', 'M[2][1] / M[0][1]', 'M[2][2] / M[0][2]']]
     #assume there are no multiples
-    e1_e2_statement= False
-    e2_e3_statement= False
-    e1_e3_statement= False
-    #test if values are suitable for division
+    e1_e2_constants_multiples= False
+    e2_e3_constants_multiples= False
+    e3_e1_constants_multiples= False
+    #and initialize var for future use
+    e1_e2_results_multiples= None
+    e2_e3_results_multiples= None
+    e3_e1_results_multiples= None
+    #test if system's constants are suitable for division
     for i in range(3):
-        #checks for e2[]
-        if (e2[i]==0):
-            if (e1[i]==0):
+        #checks for M[1]
+        if (M[1][i]==0):
+            if (M[0][i]==0):
                 check[0][i]= ''
             else:
                 check[0]= False
-        #checks for e3[]
-        if (e3[i]==0):
-            if (e2[i]==0):
+        #checks for M[2]
+        if (M[2][i]==0):
+            if (M[1][i]==0):
                 check[1][i]= ''
             else:
                 check[1]= False
-            if (e1[i]==0):
+        #checks for M[0]
+        if (M[0][i]==0):
+            if (M[2][i]==0):
                 check[2][i]= ''
             else:
                 check[2]= False
-
+    #handle system's results that are zero
+    if (M[1][3]==0):
+        if (M[0][3]==0):
+            e1_e2_results_multiples= True
+        else:
+            e1_e2_results_multiples= False
+    if (M[2][3]==0):
+        if (M[1][3]==0):
+            e2_e3_results_multiples= True
+        else:
+            e2_e3_results_multiples= False
+    if (M[0][3]==0):
+        if (M[2][3]==0):
+            e3_e1_results_multiples= True
+        else:
+            e3_e1_results_multiples= False
     #statement constructor
     if (check[0]):
         #remove falsy entries
         done= False
-        for i in range(3):
-            if (not done):
-                try:
-                    check[0].remove('')
-                except:
-                    done= True
-        #construct condition
+        while not done:
+            try:
+                check[0].remove('')
+            except:
+                done= True
+        #construct condition for system's constants
         check0_length= len(check[0])
-        if (check0_length == 1):
-            e1_e2_statement= True    
+        if (check0_length == 1 or check0_length == 0):
+            e1_e2_constants_multiples= True
         elif (check0_length == 2):
-            e1_e2_statement= eval(f'{check[0][0]} == {check[0][1]}')
+            e1_e2_constants_multiples= eval(f'{check[0][0]} == {check[0][1]}')
         elif (check0_length == 3):
-            e1_e2_statement= eval(f'{check[0][0]} == {check[0][1]} == {check[0][2]}')
+            e1_e2_constants_multiples= eval(f'{check[0][0]} == {check[0][1]} == {check[0][2]}')
+        #construct condition for system's results
+        if (e1_e2_results_multiples == None):
+            e1_e2_results_multiples= eval(f'{check[0][0]} == M[0][3]/M[1][3]')
     if (check[1]):
         #remove falsy entries
         done= False
-        for i in range(3):
-            if (not done):
-                try:
-                    check[1].remove('')
-                except:
-                    done= True
-        #construct condition
+        while not done:
+            try:
+                check[1].remove('')
+            except:
+                done= True
+        #construct condition for system's constants
         check1_length= len(check[1])
         if (check1_length == 1):
-            e2_e3_statement= True    
+            e2_e3_constants_multiples= True    
         elif (check1_length == 2):
-            e2_e3_statement= eval(f'{check[1][0]} == {check[1][1]}')
+            e2_e3_constants_multiples= eval(f'{check[1][0]} == {check[1][1]}')
         elif (check1_length == 3):
-            e2_e3_statement= eval(f'{check[1][0]} == {check[1][1]} == {check[1][2]}')
+            e2_e3_constants_multiples= eval(f'{check[1][0]} == {check[1][1]} == {check[1][2]}')
+        #construct condition for system's results
+        if (e2_e3_results_multiples == None):
+            e2_e3_results_multiples= eval(f'{check[1][0]} == M[1][3]/M[2][3]')
     if (check[2]):
         #remove falsy entries
         done= False
-        for i in range(3):
-            if (not done):
-                try:
-                    check[2].remove('')
-                except:
-                    done= True
-        #construct condition
+        while not done:
+            try:
+                check[2].remove('')
+            except:
+                done= True
+        #construct condition for system's constants
         check2_length= len(check[2])
         if (check2_length == 1):
-            e1_e3_statement= True    
+            e3_e1_constants_multiples= True    
         elif (check2_length == 2):
-            e1_e3_statement= eval(f'{check[2][0]} == {check[2][1]}')
+            e3_e1_constants_multiples= eval(f'{check[2][0]} == {check[2][1]}')
         elif (check2_length == 3):
-            e1_e3_statement= eval(f'{check[2][0]} == {check[2][1]} == {check[2][2]}')
-    return [e1_e2_statement, e2_e3_statement, e1_e3_statement]
+            e3_e1_constants_multiples= eval(f'{check[2][0]} == {check[2][1]} == {check[2][2]}')
+        #construct condition for system's results
+        if (e3_e1_results_multiples == None):
+            e3_e1_results_multiples= eval(f'{check[2][0]} == M[2][3]/M[0][3]')
+    
+    return [e1_e2_constants_multiples, e2_e3_constants_multiples, e3_e1_constants_multiples, e1_e2_results_multiples, e2_e3_results_multiples, e3_e1_results_multiples]
 
+#The following function belongs to rosetta code: 
+# https://rosettacode.org/wiki/Reduced_row_echelon_form#Python
+def reduced_row_echelon_form(M):
+    lead = 0
+    row_count = len(M)
+    column_count = len(M[0])
+    for r in range(row_count):
+        if lead >= column_count:
+            return None
+        i = r
+        while M[i][lead] == 0:
+            i += 1
+            if i == row_count:
+                i = r
+                lead += 1
+                if column_count == lead:
+                    return None
+        M[i],M[r] = M[r],M[i]
+        lv = M[r][lead]
+        M[r] = [ mrx / float(lv) for mrx in M[r]]
+        for i in range(row_count):
+            if i != r:
+                lv = M[i][lead]
+                M[i] = [ iv - lv*rv for rv,iv in zip(M[r],M[i])]
+        lead += 1
+    return M
 
 def determined_handler(e1, e2, e3):
     return
@@ -145,13 +205,24 @@ def determined_handler(e1, e2, e3):
 def undetermined_handler(e1, e2, e3):
     return
 
-def inconsistent_handler(e1, e2, e3):
+def inconsistent_handler(M):
     print('The system is inconsistent')
     menu()
     return
 
+def zeros(M):
+    var_zero= None
+    i= 0
+    done= False
+    for j in range(3):
+        while i < 3:
+            if (M[i][j]==0):
+                i = i + 1
+            else:
+                continue
+        var_zero[j]= True
+
+
 #code
 print('Welcome to the 3x3 linear equation solver, made by Kupa; Gonzalez, Ghia, Apesteguia and Gentile')
 menu()
-#System type checks
-

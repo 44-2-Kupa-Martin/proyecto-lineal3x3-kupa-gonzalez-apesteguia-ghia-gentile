@@ -66,6 +66,9 @@ def type_checker(M):
         if (result[2][2]==1):
             determined_handler(result)
             return
+        if (result[2][3]!=0):
+            inconsistent_handler()
+            return
     except:
         pass
     undetermined_handler(M)

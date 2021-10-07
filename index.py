@@ -1,5 +1,7 @@
 #   index.py
 import sys
+import determined_handler
+import undetermined_handler
 #Function declarations
 def menu():
     print('What do you want to do?\n\t1- Solve a system\n\t2- Exit')
@@ -218,12 +220,6 @@ def reduced_row_echelon_form(M):
                 M[i] = [ iv - lv*rv for rv,iv in zip(M[r],M[i])]
         lead += 1
     return M
-
-def determined_handler(e1, e2, e3):
-    return
-
-def undetermined_handler(e1, e2, e3):
-    return
 
 def inconsistent_handler(M):
     global exit_program

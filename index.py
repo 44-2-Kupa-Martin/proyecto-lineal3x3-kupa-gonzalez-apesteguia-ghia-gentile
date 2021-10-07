@@ -72,7 +72,7 @@ def type_checker(M):
         if (result[2][3]!=0):
             inconsistent_handler()
             return
-    except TypeError:
+    except IndexError:
         pass
     undetermined_handler(result)
     return

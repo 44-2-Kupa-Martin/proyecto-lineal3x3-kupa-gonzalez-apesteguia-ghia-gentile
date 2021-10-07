@@ -119,21 +119,30 @@ def multiples_identifier(M):
             else:
                 check[2]= False
     #handle system's results that are zero
-    if (M[1][3]==0):
-        if (M[0][3]==0):
-            e1_e2_results_multiples= True
-        else:
-            e1_e2_results_multiples= False
-    if (M[2][3]==0):
+    try:
         if (M[1][3]==0):
-            e2_e3_results_multiples= True
-        else:
-            e2_e3_results_multiples= False
-    if (M[0][3]==0):
+            if (M[0][3]==0):
+                e1_e2_results_multiples= True
+            else:
+                e1_e2_results_multiples= False
+    except IndexError:
+        pass
+    try:
         if (M[2][3]==0):
-            e3_e1_results_multiples= True
-        else:
-            e3_e1_results_multiples= False
+            if (M[1][3]==0):
+                e2_e3_results_multiples= True
+            else:
+                e2_e3_results_multiples= False
+    except IndexError:
+        pass
+    try:
+        if (M[0][3]==0):
+            if (M[2][3]==0):
+                e3_e1_results_multiples= True
+            else:
+                e3_e1_results_multiples= False
+    except IndexError:
+        pass
     #statement constructor
     if (check[0]):
         #remove falsy entries

@@ -1,7 +1,7 @@
 #   index.py
 import sys
-import determined_handler
-import undetermined_handler
+from determined_handler import determined_handler
+from undetermined_handler import undetermined_handler
 #Function declarations
 def menu():
     print('What do you want to do?\n\t1- Solve a system\n\t2- Exit')
@@ -64,6 +64,7 @@ def type_checker(M):
         print("All equations of the system are multiples, such systems cannot be calculated.")
         return
     result= reduced_row_echelon_form(M)
+    print(result)
     try:
         if (result[2][2]==1):
             determined_handler(result)
@@ -73,7 +74,7 @@ def type_checker(M):
             return
     except:
         pass
-    undetermined_handler(M)
+    undetermined_handler(result)
     return
 
 

@@ -12,7 +12,8 @@ def menu():
     if (a== 1):
         global input_matrix
         input_matrix= [input_handler(input('Enter the 1st equation\n(e.g 1, 2, 3, 26)\n')), input_handler(input('Enter the 2st equation\n')), input_handler(input('Enter the 3st equation\n'))]
-        type_checker(input_matrix)
+        type_checker(input_matrix
+        )
         return
     elif (a == 2):
         sys.exit()

@@ -3,6 +3,8 @@ import sys
 from determined_handler import determined_handler
 from undetermined_handler import undetermined_handler
 #Function declarations
+
+#menu(): Displays a menu and inputs the system
 def menu():
     print('What do you want to do?\n\t1- Solve a system\n\t2- Exit')
     try:
@@ -19,7 +21,7 @@ def menu():
     else:
         sys.exit('Invalid input')
     
-
+#input_handler(): Casts the system from a string to a matrix (2d list). Also prevents input errors.
 def input_handler(str):
     x= lambda a: float(a)
     try:
@@ -36,6 +38,7 @@ def input_handler(str):
     except ValueError:
         sys.exit('Invalid inputs')
 
+# type_checker(): Determines the type of the system based on whether the equations and their results are multiples.
 def type_checker(M):
     e1_e2_constants_multiples, e2_e3_constants_multiples, e3_e1_constants_multiples, e1_e2_results_multiples, e2_e3_results_multiples, e3_e1_results_multiples= multiples_identifier(M)
     #remove equations that are multiples
@@ -69,6 +72,7 @@ def type_checker(M):
     if (not M):
         print("All equations of the system are multiples, such systems cannot be calculated.")
         return
+    #apply rref
     result= reduced_row_echelon_form(M)
     print(result)
     try:
@@ -84,18 +88,19 @@ def type_checker(M):
     return
 
 
-
+#multiples_identifier(): Determined if a pair of equation are multiples.
 def multiples_identifier(M):
+    #Sets a series of checks that will or will not be evaluated depending on the denominator (if 0 don't eval).
     check= [['M[0][0] / M[1][0]', 'M[0][1] / M[1][1]', 'M[0][2] / M[1][2]'],['M[1][0] / M[2][0]', 'M[1][1] / M[2][1]', 'M[1][2] / M[2][2]'],['M[2][0] / M[0][0]', 'M[2][1] / M[0][1]', 'M[2][2] / M[0][2]']]
-    #assume there are no multiples
+    #Assume there are no multiples
     e1_e2_constants_multiples= False
     e2_e3_constants_multiples= False
     e3_e1_constants_multiples= False
-    #and initialize vars for future use
+    #and initialize vars for future use.
     e1_e2_results_multiples= None
     e2_e3_results_multiples= None
     e3_e1_results_multiples= None
-    #test if system's constants are suitable for division
+    #Test if system's constants are suitable for division. If not, delete the corresponding check. If a denominator is 0, but the corresponding numerator isn't; don't do any checks (they're not multiples).
     for i in range(3):
         #checks for M[1]
         if (check[0] and M[1][i]==0):
@@ -115,7 +120,7 @@ def multiples_identifier(M):
                 check[2][i]= ''
             else:
                 check[2]= False
-    #handle system's results that are zero
+    #Handle system's results that are zero.
     if (M[1][3]==0):
         if (M[0][3]==0):
             e1_e2_results_multiples= True
@@ -131,16 +136,16 @@ def multiples_identifier(M):
             e3_e1_results_multiples= True
         else:
             e3_e1_results_multiples= False
-    #statement constructor
+    #Statement constructor.
     if (check[0]):
-        #remove falsy entries
+        #Remove falsy entries.
         done= False
         while not done:
             try:
                 check[0].remove('')
             except ValueError:
                 done= True
-        #construct condition for system's constants
+        #Construct condition for system's constants.
         check0_length= len(check[0])
         if (check0_length == 1 or check0_length == 0):
             e1_e2_constants_multiples= True
@@ -148,21 +153,21 @@ def multiples_identifier(M):
             e1_e2_constants_multiples= eval(f'{check[0][0]} == {check[0][1]}')
         elif (check0_length == 3):
             e1_e2_constants_multiples= eval(f'{check[0][0]} == {check[0][1]} == {check[0][2]}')
-        #construct condition for system's results
+        #Construct condition for system's results.
         if (e1_e2_results_multiples == None):
             if (check0_length == 0):
                 e1_e2_results_multiples= False
             else:
                 e1_e2_results_multiples= eval(f'{check[0][0]} == M[0][3]/M[1][3]')
     if (check[1]):
-        #remove falsy entries
+        #Remove falsy entries.
         done= False
         while not done:
             try:
                 check[1].remove('')
             except ValueError:
                 done= True
-        #construct condition for system's constants
+        #Construct condition for system's constants.
         check1_length= len(check[1])
         if (check1_length == 1 or check1_length == 0):
             e2_e3_constants_multiples= True    
@@ -170,21 +175,21 @@ def multiples_identifier(M):
             e2_e3_constants_multiples= eval(f'{check[1][0]} == {check[1][1]}')
         elif (check1_length == 3):
             e2_e3_constants_multiples= eval(f'{check[1][0]} == {check[1][1]} == {check[1][2]}')
-        #construct condition for system's results
+        #Construct condition for system's results.
         if (e2_e3_results_multiples == None):
             if (check1_length == 0):
                 e2_e3_results_multiples= False
             else:
                 e2_e3_results_multiples= eval(f'{check[1][0]} == M[1][3]/M[2][3]')
     if (check[2]):
-        #remove falsy entries
+        #Remove falsy entries.
         done= False
         while not done:
             try:
                 check[2].remove('')
             except ValueError:
                 done= True
-        #construct condition for system's constants
+        #Construct condition for system's constants.
         check2_length= len(check[2])
         if (check2_length == 1 or check2_length == 0):
             e3_e1_constants_multiples= True    
@@ -192,7 +197,7 @@ def multiples_identifier(M):
             e3_e1_constants_multiples= eval(f'{check[2][0]} == {check[2][1]}')
         elif (check2_length == 3):
             e3_e1_constants_multiples= eval(f'{check[2][0]} == {check[2][1]} == {check[2][2]}')
-        #construct condition for system's results
+        #Construct condition for system's results.
         if (e3_e1_results_multiples == None):
             if (check2_length == 0):
                 e3_e1_results_multiples= False

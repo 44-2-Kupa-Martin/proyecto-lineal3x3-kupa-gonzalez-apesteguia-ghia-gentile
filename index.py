@@ -228,7 +228,7 @@ def reduced_row_echelon_form(M):
         lead += 1
     return M
 
-def inconsistent_handler(M):
+def inconsistent_handler():
     global exit_program
     print('The system is inconsistent')
     exit_program= True

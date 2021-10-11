@@ -12,8 +12,7 @@ def menu():
     if (a== 1):
         global input_matrix
         input_matrix= [input_handler(input('Enter the 1st equation\n(e.g 1, 2, 3, 26)\n')), input_handler(input('Enter the 2st equation\n')), input_handler(input('Enter the 3st equation\n'))]
-        type_checker(input_matrix
-        )
+        type_checker(input_matrix)
         return
     elif (a == 2):
         sys.exit()
@@ -25,9 +24,15 @@ def input_handler(str):
     x= lambda a: float(a)
     try:
         if (str.find(',')== -1):
-            return list(map(x, str.split(' ')))
+            equation= list(map(x, str.split(' ')))
+            if (len(equation) != 4):
+                sys.exit('Invalid inputs')
+            return equation
         else:
-            return list(map(x, str.replace(' ', '').split(',')))
+            equation= list(map(x, str.replace(' ', '').split(',')))
+            if (len(equation) != 4):
+                sys.exit('Invalid inputs')
+            return equation
     except:
         sys.exit('Invalid inputs')
 
@@ -93,57 +98,39 @@ def multiples_identifier(M):
     #test if system's constants are suitable for division
     for i in range(3):
         #checks for M[1]
-        if (M[1][i]==0):
+        if (check[0] and M[1][i]==0):
             if (M[0][i]==0):
-                try:
-                    check[0][i]= ''
-                except TypeError:
-                    pass
+                check[0][i]= ''
             else:
                 check[0]= False
         #checks for M[2]
-        if (M[2][i]==0):
+        if (check[1] and M[2][i]==0):
             if (M[1][i]==0):
-                try:
-                    check[1][i]= ''
-                except TypeError:
-                    pass
+                check[1][i]= ''
             else:
                 check[1]= False
         #checks for M[0]
-        if (M[0][i]==0):
+        if (check[2] and M[0][i]==0):
             if (M[2][i]==0):
-                try:
-                    check[2][i]= ''
-                except TypeError:
-                    pass
+                check[2][i]= ''
             else:
                 check[2]= False
     #handle system's results that are zero
-    try:
-        if (M[1][3]==0):
-            if (M[0][3]==0):
-                e1_e2_results_multiples= True
-            else:
-                e1_e2_results_multiples= False
-    except IndexError:
-        pass
-    try:
-        if (M[2][3]==0):
-            if (M[1][3]==0):
-                e2_e3_results_multiples= True
-            else:
-                e2_e3_results_multiples= False
-    except IndexError:
-        pass
-    try:
+    if (M[1][3]==0):
         if (M[0][3]==0):
-            if (M[2][3]==0):
-                e3_e1_results_multiples= True
-            else:
-                e3_e1_results_multiples= False
-    except IndexError:
-        pass
+            e1_e2_results_multiples= True
+        else:
+            e1_e2_results_multiples= False
+    if (M[2][3]==0):
+        if (M[1][3]==0):
+            e2_e3_results_multiples= True
+        else:
+            e2_e3_results_multiples= False
+    if (M[0][3]==0):
+        if (M[2][3]==0):
+            e3_e1_results_multiples= True
+        else:
+            e3_e1_results_multiples= False
     #statement constructor
     if (check[0]):
         #remove falsy entries
@@ -151,7 +138,7 @@ def multiples_identifier(M):
         while not done:
             try:
                 check[0].remove('')
-            except:
+            except ValueError:
                 done= True
         #construct condition for system's constants
         check0_length= len(check[0])
@@ -170,7 +157,7 @@ def multiples_identifier(M):
         while not done:
             try:
                 check[1].remove('')
-            except:
+            except ValueError:
                 done= True
         #construct condition for system's constants
         check1_length= len(check[1])
@@ -189,7 +176,7 @@ def multiples_identifier(M):
         while not done:
             try:
                 check[2].remove('')
-            except:
+            except ValueError:
                 done= True
         #construct condition for system's constants
         check2_length= len(check[2])

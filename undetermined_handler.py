@@ -1,6 +1,6 @@
 #   undetermined_handler.py
 def undetermined_handler(M):
-    for x in M :
+    for x in M:
         for number in x:
             number = round(number,3)
 
@@ -17,6 +17,5 @@ def undetermined_handler(M):
         cuenta_y=(M[1][3]-M[1][2]*((M[0][3]-M[0][0]*λ)/M[0][2]))/M[1][1]
         cuenta_z=(M[0][3]-M[0][0]*λ)/(M[0][2])
         print(f"S: x=λ\n    y={cuenta_y}\n    z={cuenta_z}")
-    if (a == 2)
+    if (a == 2):
         return
-return

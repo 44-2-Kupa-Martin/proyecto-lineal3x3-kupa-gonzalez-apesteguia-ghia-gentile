@@ -1,7 +1,7 @@
 #   index.py
 import sys
 from determined_handler import determined_handler
-from undetermined_handler import undetermined_handler
+from underdetermined_handler import undetermined_handler
 #Function declarations
 def menu():
     print('What do you want to do?\n\t1- Solve a system\n\t2- Exit')

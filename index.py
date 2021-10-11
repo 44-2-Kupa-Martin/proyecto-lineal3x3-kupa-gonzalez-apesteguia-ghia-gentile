@@ -29,15 +29,15 @@ def input_handler(str):
         if (str.find(',')== -1):
             equation= list(map(x, str.split(' ')))
             if (len(equation) != 4):
-                sys.exit('Invalid inputs')
+                sys.exit('Invalid input')
             return equation
         else:
             equation= list(map(x, str.replace(' ', '').split(',')))
             if (len(equation) != 4):
-                sys.exit('Invalid inputs')
+                sys.exit('Invalid input')
             return equation
     except ValueError:
-        sys.exit('Invalid inputs')
+        sys.exit('Invalid input')
 
 # type_checker(): Determines the type of the system based on whether the equations and their results are multiples.
 def type_checker(M):
@@ -73,7 +73,7 @@ def type_checker(M):
     if (not M):
         print("All equations of the system are multiples, such systems cannot be calculated.")
         return
-    #apply rref
+    #Apply rref.
     result= reduced_row_echelon_form(M)
     try:
         if (result[2][2]==1):
@@ -88,7 +88,7 @@ def type_checker(M):
     return
 
 
-#multiples_identifier(): Determined if a pair of equation are multiples.
+#multiples_identifier(): Determines if a pair of equation are multiples.
 def multiples_identifier(M):
     #Sets a series of checks that will or will not be evaluated depending on the denominator (if 0 don't eval).
     check= [['M[0][0] / M[1][0]', 'M[0][1] / M[1][1]', 'M[0][2] / M[1][2]'],['M[1][0] / M[2][0]', 'M[1][1] / M[2][1]', 'M[1][2] / M[2][2]'],['M[2][0] / M[0][0]', 'M[2][1] / M[0][1]', 'M[2][2] / M[0][2]']]

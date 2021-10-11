@@ -33,7 +33,7 @@ def input_handler(str):
             if (len(equation) != 4):
                 sys.exit('Invalid inputs')
             return equation
-    except:
+    except ValueError:
         sys.exit('Invalid inputs')
 
 def type_checker(M):
@@ -150,7 +150,10 @@ def multiples_identifier(M):
             e1_e2_constants_multiples= eval(f'{check[0][0]} == {check[0][1]} == {check[0][2]}')
         #construct condition for system's results
         if (e1_e2_results_multiples == None):
-            e1_e2_results_multiples= eval(f'{check[0][0]} == M[0][3]/M[1][3]')
+            if (check0_length == 0):
+                e1_e2_results_multiples= False
+            else:
+                e1_e2_results_multiples= eval(f'{check[0][0]} == M[0][3]/M[1][3]')
     if (check[1]):
         #remove falsy entries
         done= False
@@ -169,7 +172,10 @@ def multiples_identifier(M):
             e2_e3_constants_multiples= eval(f'{check[1][0]} == {check[1][1]} == {check[1][2]}')
         #construct condition for system's results
         if (e2_e3_results_multiples == None):
-            e2_e3_results_multiples= eval(f'{check[1][0]} == M[1][3]/M[2][3]')
+            if (check1_length == 0):
+                e2_e3_results_multiples= False
+            else:
+                e2_e3_results_multiples= eval(f'{check[1][0]} == M[1][3]/M[2][3]')
     if (check[2]):
         #remove falsy entries
         done= False
@@ -188,7 +194,10 @@ def multiples_identifier(M):
             e3_e1_constants_multiples= eval(f'{check[2][0]} == {check[2][1]} == {check[2][2]}')
         #construct condition for system's results
         if (e3_e1_results_multiples == None):
-            e3_e1_results_multiples= eval(f'{check[2][0]} == M[2][3]/M[0][3]')
+            if (check2_length == 0):
+                e3_e1_results_multiples= False
+            else:
+                e3_e1_results_multiples= eval(f'{check[2][0]} == M[2][3]/M[0][3]')
     
     return [e1_e2_constants_multiples, e2_e3_constants_multiples, e3_e1_constants_multiples, e1_e2_results_multiples, e2_e3_results_multiples, e3_e1_results_multiples]
 

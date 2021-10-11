@@ -1,7 +1,7 @@
 #   index.py
 import sys
 from determined_handler import determined_handler
-from undetermined_handler import undetermined_handler
+from underdetermined_handler import underdetermined_handler
 #Function declarations
 
 #menu(): Displays a menu and inputs the system
@@ -17,6 +17,7 @@ def menu():
         type_checker(input_matrix)
         return
     elif (a == 2):
+        print('\tQuitting...')
         sys.exit()
     else:
         sys.exit('Invalid input')
@@ -45,21 +46,21 @@ def type_checker(M):
     if (e1_e2_constants_multiples):
         print('The 1st and the 2nd equation are multiples')
         if (not e1_e2_results_multiples):
-            inconsistent_handler(M)
+            inconsistent_handler()
             return
         else:
             M[0]= None
     if (e2_e3_constants_multiples):
         print('The 2nd and the 3rd equation are multiples')
         if (not e2_e3_results_multiples):
-            inconsistent_handler(M)
+            inconsistent_handler()
             return
         else:
             M[1]= None
     if (e3_e1_constants_multiples):
         print('The 1st and the 3rd equation are multiples')
         if (not e3_e1_results_multiples):
-            inconsistent_handler(M)
+            inconsistent_handler()
             return
         else:
             M[2]= None
@@ -74,7 +75,6 @@ def type_checker(M):
         return
     #apply rref
     result= reduced_row_echelon_form(M)
-    print(result)
     try:
         if (result[2][2]==1):
             determined_handler(result)
@@ -84,7 +84,7 @@ def type_checker(M):
             return
     except IndexError:
         pass
-    undetermined_handler(result)
+    underdetermined_handler(result)
     return
 
 
@@ -234,13 +234,10 @@ def reduced_row_echelon_form(M):
     return M
 
 def inconsistent_handler():
-    global exit_program
-    print('The system is inconsistent')
-    exit_program= True
+    print('The system is inconsistent\n')
     return
 
 #code
 print('Welcome to the 3x3 linear equation solver, made by Kupa; Gonzalez, Ghia, Apesteguia and Gentile')
-exit_program= False
-while not exit_program:
+while True:
     menu()

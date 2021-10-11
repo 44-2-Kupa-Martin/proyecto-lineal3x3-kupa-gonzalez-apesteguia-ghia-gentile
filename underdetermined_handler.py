@@ -1,6 +1,6 @@
 #   underdetermined_handler.py
 def underdetermined_handler(M):
-
+    print('The system is underdetermined')
     #rounding the numbers of the matrix saving them in another array to then replace them in the ecuation
     rounded_M = []
 

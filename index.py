@@ -70,8 +70,8 @@ def type_checker(M):
             M.remove(None)
         except ValueError:
             done= True
-    if (not M):
-        print("All equations of the system are multiples, such systems cannot be calculated.")
+    if (not M or len(M)==1):
+        print("All equations of the system are multiples or null, such systems cannot be calculated.")
         return
     #Apply rref.
     result= reduced_row_echelon_form(M)

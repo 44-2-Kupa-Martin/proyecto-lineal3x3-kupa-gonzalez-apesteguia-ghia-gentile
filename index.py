@@ -237,7 +237,7 @@ def inconsistent_handler():
 
 def determined_handler(M):
     print("The system is determined")
-    print(f"S: \nx={M[0][3]}\ny={M[1][3]}\nz={M[2][3]}")
+    print(f"S: \nx={round(M[0][3], 3)}\ny={round(M[1][3], 3)}\nz={round(M[2][3], 3)}")
     return
 
 def underdetermined_handler(M):
@@ -267,7 +267,7 @@ def underdetermined_handler(M):
         equation_for_z=(M[0][3]-M[0][0]*λ)/(M[0][2])
         equation_for_y=(M[1][3]-M[1][2])*(equation_for_z)/M[1][1]
 
-        print(f"S: x=λ\n    y={round(equation_for_y, 3)}\n    z={round(equation_for_z, 3)}")
+        print(f"Given λ={λ}\nS:  x={λ}\n    y={round(equation_for_y, 3)}\n    z={round(equation_for_z, 3)}")
     if (a == 2):
         return
 

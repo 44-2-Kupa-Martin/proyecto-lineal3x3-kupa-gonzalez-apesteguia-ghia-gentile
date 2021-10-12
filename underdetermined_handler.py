@@ -14,18 +14,18 @@ def underdetermined_handler(M):
     #printing the ecuation
     print(f"S: x=λ\n   y=({rounded_M[1][3]}{minus(rounded_M[1][2])}·(({rounded_M[0][3]}{minus(rounded_M[0][0])}·λ)/{rounded_M[0][2]}))/{rounded_M[1][1]}\n   z=({rounded_M[0][3]}{minus(rounded_M[0][0])}·λ)/{rounded_M[0][2]}")
     
-    print("Quiere ponerle un valor a lambda?\n\t1- si\n\t2- No")
-    try: 
+    print("Do you want to calculate for lambda?\n\t1- Yes\n\t2- No")
+    try:
         a= int(input())
     except ValueError:
         sys.exit('Invalid input')
-    print("Ingrese un valor")
     if (a == 1):
+        print("Input a value for lambda")
         λ = float(input())
         #equations 
-        cuenta_z=(M[0][3]-M[0][0]*λ)/(M[0][2])
-        cuenta_y=(M[1][3]-M[1][2])*(cuenta_z)/M[1][1]
+        equation_for_z=(M[0][3]-M[0][0]*λ)/(M[0][2])
+        equation_for_y=(M[1][3]-M[1][2])*(equation_for_z)/M[1][1]
 
-        print(f"S: x=λ\n    y={round(cuenta_y, 3)}\n    z={round(cuenta_z, 3)}")
+        print(f"S: x=λ\n    y={round(equation_for_y, 3)}\n    z={round(equation_for_z, 3)}")
     if (a == 2):
-        return  
+        return
